@@ -201,6 +201,25 @@ def nifti_getter(
         eliminate_consecutive_duplicates(list(visu_pars["VisuCoreOrientation"]))
     )
 
+    # get resolution - same for all sub-volumes.
+    if ((len(visu_pars["VisuCoreExtent"]) < 3) and (visu_pars["VisuCoreOrientation"].ndim == 2) 
+        and (visu_pars["VisuCoreOrientation"].shape[0]>1) 
+        and np.all(visu_pars["VisuCoreOrientation"][0,:]==visu_pars["VisuCoreOrientation"][1,:])):
+
+        slice_distance = np.linalg.norm(visu_pars["VisuCorePosition"][0,:]-visu_pars["VisuCorePosition"][1,:])
+    else:
+        # use FrameThickness if:
+            # - single slice
+            # - multiple orientation (scout)
+            # - 3D (parameter not used, so no need to get it)
+        slice_distance = visu_pars["VisuCoreFrameThickness"]
+
+    resolution = compute_resolution_from_visu_pars(
+        visu_pars["VisuCoreExtent"],
+        visu_pars["VisuCoreSize"],
+        slice_distance,
+    )
+
     if num_sub_volumes > 1:
 
         output_nifti = []
@@ -210,13 +229,6 @@ def nifti_getter(
             vol_pre_shape[0],
             vol_pre_shape[1],
             int(vol_pre_shape[2] / num_sub_volumes),
-        )
-
-        # get resolution - same for all sub-volumes.
-        resolution = compute_resolution_from_visu_pars(
-            visu_pars["VisuCoreExtent"],
-            visu_pars["VisuCoreSize"],
-            visu_pars["VisuCoreFrameThickness"],
         )
 
         for id_sub_vol in range(num_sub_volumes):
@@ -313,13 +325,6 @@ def nifti_getter(
                             else:
                                 # Else ?
                                 vol_data = vol_data.reshape(sh, order="F")
-
-        # get resolution
-        resolution = compute_resolution_from_visu_pars(
-            visu_pars["VisuCoreExtent"],
-            visu_pars["VisuCoreSize"],
-            visu_pars["VisuCoreFrameThickness"],
-        )
 
         # compute affine
         affine_transf = compute_affine_from_visu_pars(

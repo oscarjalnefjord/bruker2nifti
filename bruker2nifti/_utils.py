@@ -450,13 +450,13 @@ def data_corrector(
 # -- nifti affine matrix utils --
 
 
-def compute_resolution_from_visu_pars(vc_extent, vc_size, vc_frame_thickness):
+def compute_resolution_from_visu_pars(vc_extent, vc_size, slice_distance):
     """
     Resolution parameter is provided as a vector in the 'reco' parameter file. To extract the information from the
     'visu_pars' only, as some scans can lack the reco file, some computation on its paramteres neesd to be performed.
     :param vc_extent: VisuCoreExtent parameter file from 'visu_pars'.
     :param vc_size: VisuCoreSize parameter file from 'visu_pars'.
-    :param vc_frame_thickness: VisuCoreFrameThickness parameter file from 'visu_pars'.
+    :param slice_distance: Distance between slices, i.e. slice thickness + slice gap.
     :return:
     """
 
@@ -465,13 +465,13 @@ def compute_resolution_from_visu_pars(vc_extent, vc_size, vc_frame_thickness):
     else:
         raise IOError
 
-    if isinstance(vc_frame_thickness, np.ndarray) or isinstance(
-        vc_frame_thickness, list
+    if isinstance(slice_distance, np.ndarray) or isinstance(
+        slice_distance, list
     ):
-        vc_frame_thickness = vc_frame_thickness[0]
+        slice_distance = slice_distance[0]
 
     if len(vc_extent) == 2:
-        resolution += [vc_frame_thickness]
+        resolution += [slice_distance]
         return resolution
     elif len(vc_extent) == 3:
         return resolution
