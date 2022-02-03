@@ -481,12 +481,12 @@ def compute_resolution_from_visu_pars(vc_extent, vc_size, slice_distance):
 
 def sanity_check_visu_core_subject_position(vc_subject_position):
     """
-    The parameter VisuCoreSubjectPosition can be 'Head_Prone' or 'Head_Supine'. Tertium non datur.
+    The parameter VisuCoreSubjectPosition can be 'Head_Prone', 'Head_Supine' or 'Foot_Prone'. Tertium non datur.
     :param vc_subject_position: VisuCoreSubjectPosition from 'visu_pars'
-    :return: Raise error if VisuCoreSubjectPosition is not 'Head_Prone' or 'Head_Supine'
+    :return: Raise error if VisuCoreSubjectPosition is not 'Head_Prone', 'Head_Supine' or 'Foot_Prone'
     """
-    if vc_subject_position not in ["Head_Prone", "Head_Supine"]:
-        msg = "Known cases are 'Head_Prone' or  'Head_Supine' for the parameter 'visu_pars.VisuSubjectPosition."
+    if vc_subject_position not in ["Head_Prone", "Head_Supine","Foot_Prone"]:
+        msg = "Known cases are 'Head_Prone', 'Head_Supine' or 'Foot_Prone' for the parameter 'visu_pars.VisuSubjectPosition."
         raise IOError(msg)
 
 
